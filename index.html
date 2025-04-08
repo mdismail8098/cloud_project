@@ -1,0 +1,68 @@
+{% extends 'chat/base.html' %}
+
+{% block title %}Groq Chat Interface{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4">
+        <!-- Left Panel -->
+        <div class="col-md-4">
+            <div class="left-panel shadow-sm">
+                <h5 class="mb-4">Customization</h5>
+
+                <div class="mb-3">
+                    <label class="form-label">System Prompt</label>
+                    <textarea class="form-control" rows="3" placeholder="Enter system prompt..."></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Model</label>
+                    <select class="form-select">
+                        <option selected>Mixtral</option>
+                        <option>Llama3</option>
+                        <option>Gemma</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Memory Length: <span id="memory-value">5</span></label>
+                    <input type="range" class="form-range" min="1" max="20" value="5" id="memory-range">
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="col-md-8">
+            <div class="right-panel shadow-sm">
+                <h3 class="mb-3">Groq Chat Interface</h3>
+                <p class="text-muted">Ask anything and get AI responses.</p>
+
+                <div class="chat-box mb-3" id="chat-box">
+                    {% for chat in chat_history %}
+                        <div class="user-message">{{ chat.human }}</div>
+                        <div class="bot-message">{{ chat.AI }}</div>
+                    {% endfor %}
+                </div>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="input-group chat-input">
+                        <input type="text" class="form-control" name="user_input" placeholder="Type your message..." required>
+                        <button class="btn btn-dark" type="submit">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const memoryRange = document.getElementById('memory-range');
+    const memoryValue = document.getElementById('memory-value');
+    memoryRange.addEventListener('input', () => {
+        memoryValue.textContent = memoryRange.value;
+    });
+</script>
+{% endblock %}
